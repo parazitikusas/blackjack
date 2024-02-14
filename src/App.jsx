@@ -55,21 +55,18 @@ function getSum(hand) {
 	return sum;
 }
 
-function stylePage(status){
-  let message =  document.getElementById("status");
-  let bal = document.querySelector(".bet");
-  if(status === "win") {
-   message.style.backgroundColor = "green";
-
-  }
-  else if(status === "lost") {
-    message.style.backgroundColor = "red";
-	bal.classList.add("lostBal");
-  }
-  else if (status === "draw"){
-    message.style.backgroundColor = "grey";
-	bal.classList.add("drawBal");
-  }
+function stylePage(status) {
+	let message = document.getElementById("status");
+	let bal = document.querySelector(".bet");
+	if (status === "win") {
+		message.style.backgroundColor = "green";
+	} else if (status === "lost") {
+		message.style.backgroundColor = "red";
+		bal.classList.add("lostBal");
+	} else if (status === "draw") {
+		message.style.backgroundColor = "grey";
+		bal.classList.add("drawBal");
+	}
 }
 
 let deck = createDeck();
@@ -92,14 +89,13 @@ function App() {
 		checkStatus(card);
 	}
 
-  function resetBet(status) {
-    if(status === "win") {
-      setBalance(balance + bet);
-    }
-    else if(status === "lost") {
-      setBalance(balance - bet);
-    }
-  }
+	function resetBet(status) {
+		if (status === "win") {
+			setBalance(balance + bet);
+		} else if (status === "lost") {
+			setBalance(balance - bet);
+		}
+	}
 
 	function checkStatus(card) {
 		if (getSum([...usersHand, card]) > 21) {
@@ -147,8 +143,8 @@ function App() {
 		setDealersHand([initCard1]);
 		setDealersSum(getSum([initCard1]));
 		setStatus("");
-    setBet(0);
-    setBetPlaced(false);
+		setBet(0);
+		setBetPlaced(false);
 		document.getElementById("status").innerHTML = "";
 	}
 
@@ -156,9 +152,9 @@ function App() {
 		initGame();
 	}, []);
 
-  useEffect(() => {
+	useEffect(() => {
 		resetBet(status);
-    stylePage(status);
+		stylePage(status);
 	}, [status]);
 
 	function dealerEnd() {
@@ -174,55 +170,73 @@ function App() {
 
 	return (
 		<>
-			<h1 className="honk">Blackjack</h1>
-			<h2 id="status" className="rubik"></h2>
-			{!betPlaced && (
-				<div className="setbet mx-auto rubik">
+			{balance === 0 ? (
+				<div className="rubik">
 					<h2 className="rubik balance">Balance: ${balance}</h2>
-					<button onClick={() => setBet(Math.max(0, bet - 1))} className="sub">
-						-1
+					<h1 className="text-danger">You are in bankruptcy</h1>
+					<h2 className="mx-5">Would you like to sell your house to continue gambling?</h2>
+					<button onClick={() => {setBalance(100000); initGame()}} className="controls hit house" >
+						Sell your house
 					</button>
-					<button onClick={() => setBet(Math.max(0, bet - 10))} className="sub">
-						-10
-					</button>
-					<h2 className="d-inline">
-						<span className="badge mt-3">${bet}</span>
-					</h2>
-					<button onClick={() => setBet(Math.min(bet + 1, balance))} className="add">
-						+1
-					</button>
-					<button onClick={() => setBet(Math.min(bet + 10, balance))} className="add">
-						+10
-					</button>
-					{bet > 0 && (
-						<button onClick={() => bet > 0 && setBetPlaced(true)} className="d-block mx-auto mt-3">
-							Place bet
-						</button>
-					)}
 				</div>
-			)}
-			{betPlaced && <h2 className="bet rubik">Bet: ${bet}</h2>}
-			{status === "" && betPlaced && (
-				<button onClick={drawCard} className="controls hit">
-					Hit
-				</button>
-			)}
-			{status === "" && betPlaced && (
-				<button onClick={stand} className="controls stand">
-					Stand
-				</button>
-			)}
-			{status !== "" && (
-				<button onClick={initGame} className="controls">
-					Reset
-				</button>
-			)}
-			<br />
-			{betPlaced && (
-				<div>
-					<UsersHand cards={usersHand} sum={usersSum} />
-					<DealersHand cards={dealersHand} sum={dealersSum} />
-				</div>
+			) : (
+				<>
+					<>
+						<h1 className="honk">Blackjack</h1>
+						<h2 id="status" className="rubik"></h2>
+						{!betPlaced && (
+							<div className="setbet mx-auto rubik">
+								<h2 className="rubik balance">Balance: ${balance}</h2>
+								<button onClick={() => setBet(Math.max(0, bet - 1))} className="sub">
+									-1
+								</button>
+								<button onClick={() => setBet(Math.max(0, bet - 10))} className="sub">
+									-10
+								</button>
+								<h2 className="d-inline">
+									<span className="badge mt-3">${bet}</span>
+								</h2>
+								<button onClick={() => setBet(Math.min(bet + 1, balance))} className="add">
+									+1
+								</button>
+								<button onClick={() => setBet(Math.min(bet + 10, balance))} className="add">
+									+10
+								</button>
+								{bet > 0 && (
+									<button
+										onClick={() => bet > 0 && setBetPlaced(true)}
+										className="d-block mx-auto mt-3"
+									>
+										Place bet
+									</button>
+								)}
+							</div>
+						)}
+						{betPlaced && <h2 className="bet rubik">Bet: ${bet}</h2>}
+						{status === "" && betPlaced && (
+							<button onClick={drawCard} className="controls hit">
+								Hit
+							</button>
+						)}
+						{status === "" && betPlaced && (
+							<button onClick={stand} className="controls stand">
+								Stand
+							</button>
+						)}
+						{status !== "" && (
+							<button onClick={initGame} className="controls">
+								Reset
+							</button>
+						)}
+						<br />
+						{betPlaced && (
+							<div>
+								<UsersHand cards={usersHand} sum={usersSum} />
+								<DealersHand cards={dealersHand} sum={dealersSum} />
+							</div>
+						)}
+					</>
+				</>
 			)}
 		</>
 	);
